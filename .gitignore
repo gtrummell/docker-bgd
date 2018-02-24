@@ -1,0 +1,7 @@
+# Version control
+.idea
+
+
+# Temporary files and directories
+tmp*
+temp*

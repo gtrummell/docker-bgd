@@ -1,0 +1,28 @@
+Railyard Canary-style Blue-Green Deployer
+=========================================
+
+Railyard is a demonstration of deploying a new version of a containerized
+application at a controlled rate.  This allows a "Canary" for a new
+application version (app-green) into an existing environment (app-blue)
+precisely instead of linear or fixed methods commonly used in pure blue-
+green deployments.  Railyard accomplishes this by controlling traffic to
+containers through a load balancer.
+
+
+How Railyard works
+-----------
+
+Railyard assumes that a container orchestrator is launching and tearing
+down containers on one or more instances (i.e. Mesos, SWARM, Nomad, etc.).
+Registrator listens for new containers launched on each instance, then
+registers them in Consul as new services.  One or more containers running
+Nginx receive configurations managed by Consul-Template.  Operators can
+manually set a deployment weight for each version of the application in
+Consul, or they can automate application weights using the Consul API.
+
+
+License
+-------
+
+Railyard is GPLv2 open-source software.  See LICENSE for more details.
+
