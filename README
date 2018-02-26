@@ -1,6 +1,8 @@
 Docker-BGD Canary-style Blue-Green Deployer
 ===========================================
 
+![Travis.ci Build Status](https://travis-ci.org/gtrummell/docker-bgd.svg?branch=master)
+
 Docker-BGD is a demonstration of deploying a new version of a containerized
 application.  In this case, a new application version (app-green) is deployed
 into an existing environment (app-blue).  Once app-green is fully deployed,
