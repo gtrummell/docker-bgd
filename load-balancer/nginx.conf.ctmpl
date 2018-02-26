@@ -1,0 +1,22 @@
+daemon off;
+error_log /dev/stdout info;
+events {
+  worker_connections 4096;
+}
+
+worker_processes 4;
+
+http {
+  access_log /dev/stdout; {{ range services }} {{ if .Name | contains "sample-app" }}
+  upstream {{ .Name }} { {{ range service .Name }}
+    server {{ env "HOST_IP" }}:{{ .Port }} weight=1;{{ else }}server 127.0.0.1:65535; # force a 502{{ end }}
+  }
+  {{ end }} {{ end }}
+  server {
+    listen 80; {{ range services }} {{ if .Name | contains "sample-app" }}
+    location / {
+      proxy_pass http://{{ .Name }};
+    }
+    {{ end }} {{ end }}
+  }
+}

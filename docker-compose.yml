@@ -1,0 +1,71 @@
+version: '3.5'
+
+services:
+  consul:
+    image: consul:latest
+    container_name: consul
+    environment:
+      - CONSUL_BIND_ADDRESS=0.0.0.0
+    ports:
+      - "8500:8500/tcp"
+    networks:
+      - private
+
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    depends_on:
+      - "consul"
+    entrypoint:
+      - /bin/registrator
+      - -internal=false
+      - consul://consul:8500
+    links:
+      - consul
+    networks:
+      - private
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+
+  load-balancer:
+    image: load-balancer:latest
+    container_name: load-balancer
+    environment:
+      - CONSUL_ADDR=consul:8500
+      - HOST_IP=$HOST_IP
+    links:
+      - consul
+    ports:
+      - "80:80/tcp"
+    networks:
+      - private
+
+  sample-app-green:
+    image: sample-app:green
+    environment:
+      - SERVICE_TAGS=green
+    links:
+      - load-balancer
+    ports:
+      - "9080:80/tcp"
+    networks:
+      - private
+
+  sample-app-blue:
+    image: sample-app:blue
+    environment:
+      - SERVICE_TAGS=blue
+    links:
+      - load-balancer
+    ports:
+      - "9081:80/tcp"
+    networks:
+      - private
+
+networks:
+  private:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.80.0/24
