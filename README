@@ -1,5 +1,5 @@
-Docker-BGD Canary-style Blue-Green Deployer
-===========================================
+Docker-based Blue-Green Deployer
+================================
 
 ![Travis.ci Build Status](https://travis-ci.org/gtrummell/docker-bgd.svg?branch=master)
 
